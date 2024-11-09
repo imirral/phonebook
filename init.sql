@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS phonebook (
+	id SERIAL PRIMARY KEY,
+	name VARCHAR(30) NOT NULL,
+	phone VARCHAR(11) NOT NULL,
+	comment TEXT
+);
