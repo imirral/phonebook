@@ -13,6 +13,8 @@ def main():
         port="5432"
     )
 
+    table = 'phonebook'
+
     while True:
         try:
             print("Используйте команды: add, delete, update, search_by_name, search_by_number, exit")
@@ -22,24 +24,24 @@ def main():
                 name = input("Введите имя: ")
                 phone = input("Введите номер: ")
                 comment = input("Введите комментарий: ")
-                db_service.add_record(name, phone, comment)
+                db_service.add_record(table, name, phone, comment)
 
             elif command == "delete":
                 name = input("Введите имя для удаления: ")
-                db_service.delete_record(name)
+                db_service.delete_record(table, name)
 
             elif command == "update":
                 name = input("Введите имя для обновления: ")
                 new_phone = input("Введите новый номер: ")
-                db_service.update_number(name, new_phone)
+                db_service.update_number(table, name, new_phone)
 
             elif command == "search_by_name":
                 name = input("Введите имя для поиска: ")
-                db_service.search_by_name(name)
+                db_service.search_by_name(table, name)
 
             elif command == "search_by_number":
                 partial_number = input("Введите часть номера для поиска: ")
-                db_service.search_by_number(partial_number)
+                db_service.search_by_number(table, partial_number)
 
             elif command == "exit":
                 print("Выход из программы.")

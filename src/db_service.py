@@ -20,7 +20,7 @@ class DbService:
         return psycopg2.connect(**self.db_params)
 
     # Добавление записи
-    def add_record(self, name, phone, comment):
+    def add_record(self, table, name, phone, comment):
         if not phone.isdigit() or len(phone) != 11:
             print("Неверный формат номера телефона.")
             return
@@ -31,7 +31,8 @@ class DbService:
         try:
             conn = self.connect_db()
             cur = conn.cursor()
-            cur.execute("INSERT INTO phonebook (name, phone, comment) VALUES (%s, %s, %s)", (name, phone, comment))
+            query = f"INSERT INTO {table} (name, phone, comment) VALUES (%s, %s, %s)"
+            cur.execute(query, (name, phone, comment))
             conn.commit()
             print("Запись добавлена!")
         except Exception as e:
@@ -41,11 +42,12 @@ class DbService:
             conn.close()
 
     # Удаление записи (по имени)
-    def delete_record(self, name):
+    def delete_record(self, table, name):
         try:
             conn = self.connect_db()
             cur = conn.cursor()
-            cur.execute("DELETE FROM phonebook WHERE name = %s", (name,))
+            query = f"DELETE FROM {table} WHERE name = %s"
+            cur.execute(query, (name,))
             conn.commit()
             print("Запись удалена!")
         except Exception as e:
@@ -55,7 +57,7 @@ class DbService:
             conn.close()
 
     # Обновление записи (номера телефона по имени)
-    def update_number(self, name, new_phone):
+    def update_number(self, table, name, new_phone):
         if not new_phone.isdigit() or len(new_phone) != 11:
             print("Неверный формат номера телефона.")
             return
@@ -63,7 +65,8 @@ class DbService:
         try:
             conn = self.connect_db()
             cur = conn.cursor()
-            cur.execute("UPDATE phonebook SET phone = %s WHERE name = %s", (new_phone, name))
+            query = f"UPDATE {table} SET phone = %s WHERE name = %s"
+            cur.execute(query, (new_phone, name))
             conn.commit()
             print("Номер обновлён!")
         except Exception as e:
@@ -73,11 +76,12 @@ class DbService:
             conn.close()
 
     # Поиск записи (по имени)
-    def search_by_name(self, name):
+    def search_by_name(self, table, name):
         try:
             conn = self.connect_db()
             cur = conn.cursor()
-            cur.execute("SELECT * FROM phonebook WHERE name = %s", (name,))
+            query = f"SELECT * FROM {table} WHERE name = %s"
+            cur.execute(query, (name,))
             records = cur.fetchall()
             for record in records:
                 print(record[1], format_phone(record[2]), record[3])
@@ -88,11 +92,12 @@ class DbService:
             conn.close()
 
     # Поиск записи (по номеру телефона / части номера телефона)
-    def search_by_number(self, partial_number):
+    def search_by_number(self, table, partial_number):
         try:
             conn = self.connect_db()
             cur = conn.cursor()
-            cur.execute("SELECT * FROM phonebook WHERE phone LIKE %s", ('%' + partial_number + '%',))
+            query = f"SELECT * FROM {table} WHERE phone LIKE %s"
+            cur.execute(query, ('%' + partial_number + '%',))
             records = cur.fetchall()
             for record in records:
                 print(record[1], format_phone(record[2]), record[3])
